@@ -1,8 +1,15 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:worldskill_module1/page/homepage.dart';
 
 void main() {
-  runApp(const MyApp(home:HomePage()));
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel')
+  ],debug: true);
+  runApp(const MyApp(home: HomePage()));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,15 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WorldSkill Module',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-       
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        
-      ),
-      home: home
-    );
+        title: 'WorldSkill Module',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: home);
   }
 }

@@ -1,13 +1,14 @@
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:worldskill_module1/model/ticket.dart';
-import 'package:worldskill_module1/services/NotificationService.dart';
+
 
 class TicketDetailPage extends StatefulWidget {
   const TicketDetailPage({super.key, required this.ticket});
@@ -25,28 +26,86 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
     return '${date.year}-${twoDigit(date.month)}-${twoDigit(date.day)} ${twoDigit(date.hour)}:${twoDigit(date.minute)}';
   }
 
-@override
-void initState() {
-  super.initState();
-  initializeNotifications();
-}
-Future<void> downloadImage() async {
-    // Request permissions
-    showNotification();
-    PermissionStatus status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Capture screenshot
-      final image = await screenshotController.capture();
-      if (image != null) {
-       await ImageGallerySaver.saveImage(image);
+  @override
+  void initState() {
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
       }
+    });
+
+    //if(Permission.storage.)
+    
+    super.initState();
+  }
+
+  triggerNotification() {
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: 10,
+            channelKey: 'basic_channel',
+            title: 'Image Download',
+            body: 'Your ticket was downloaded!'));
+  }
+
+Future<void> requestPermissions() async {
+  if (Platform.isAndroid) {
+    if (await Permission.storage.isGranted &&
+        await Permission.accessMediaLocation.isGranted) {
+      // Permissions are already granted
+      return;
+    }
+
+    if (await Permission.storage.request().isGranted &&
+        await Permission.accessMediaLocation.request().isGranted) {
+      // Permissions are granted
+      return;
+    }
+
+    // For Android 11 and above
+    if (await Permission.manageExternalStorage.isGranted) {
+      // MANAGE_EXTERNAL_STORAGE permission is granted
+      return;
+    }
+
+    if (await Permission.manageExternalStorage.request().isGranted) {
+      // MANAGE_EXTERNAL_STORAGE permission is granted
+      return;
+    }
+
+    // If permissions are denied
+    openAppSettings();
+  } else {
+    // For iOS, request photos permission
+    if (await Permission.photos.request().isGranted) {
+      // Photos permission is granted
+      return;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Storage permission denied')),
-      );
+      // If permission is denied
+      openAppSettings();
     }
   }
-  
+}
+  Future<void> downloadImage() async {
+    // Request permissions
+    triggerNotification();
+    await requestPermissions();
+    
+     final image = await screenshotController.capture();
+      if (image != null) {
+        await ImageGallerySaver.saveImage(image);
+      }
+    // if (status.isGranted) {
+    //   // Capture screenshot
+     
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('Storage permission denied')),
+    //   );
+    // }
+  }
+
   // Future<void> downloadImage() async {
   //   final image = await screenshotController.capture();
 
@@ -79,7 +138,7 @@ Future<void> downloadImage() async {
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.6,
                 width: MediaQuery.of(context).size.width * 0.8,
-                decoration: BoxDecoration(color: Colors.black12),
+                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 2)),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

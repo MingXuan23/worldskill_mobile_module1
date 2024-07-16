@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:worldskill_module1/model/ticket.dart';
 
 class ApiService {
-  static String baseurl = '10.131.75.20:8080';
+  static String baseurl = '10.200.96.198:8080';
 
   static Future<List<Event>> getEvents() async {
     try {
