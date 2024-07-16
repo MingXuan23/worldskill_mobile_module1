@@ -18,8 +18,8 @@ class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
 
   List<Widget> pages = [
-    EventPage(),
-    TicketPage(),
+    EventTabPage(),
+    TicketTabPage(),
     RecordPage()
 
   ];
