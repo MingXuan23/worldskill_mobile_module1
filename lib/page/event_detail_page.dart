@@ -86,7 +86,7 @@ void showPic(int index) {
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * 0.4,
                 width: MediaQuery.of(context).size.width * 0.8,
                 decoration: BoxDecoration(color: Colors.black12),
                 child: Text(

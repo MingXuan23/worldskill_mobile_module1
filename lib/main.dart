@@ -1,6 +1,8 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:worldskill_module1/page/ball_page.dart';
 import 'package:worldskill_module1/page/homepage.dart';
+import 'package:worldskill_module1/page/pagination_page.dart';
 
 void main() {
   AwesomeNotifications().initialize(null, [
@@ -9,7 +11,7 @@ void main() {
         channelName: 'Basic notifications',
         channelDescription: 'Notification channel')
   ],debug: true);
-  runApp(const MyApp(home: HomePage()));
+  runApp( MyApp(home: Photo_Page()));
 }
 
 class MyApp extends StatelessWidget {
